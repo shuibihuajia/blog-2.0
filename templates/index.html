@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" href="/static/bs/css/bootstrap.css">
+    <style>
+        .desc_info{
+            margin-left: 50px;
+            margin-top: 15px;
+            text-align: justify;
+            font-size: 13px;
+        }
+    </style>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">BigV</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/index/">Index<span class="sr-only">(current)</span></a></li>
+                <li><a href="#">HomeSite</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.user.username %}
+                    <li><a href="#">hello {{ request.user.username }}</a></li>
+                {% else %}
+                    <li><a href="#">登陆</a></li>
+                    <li><a href="#">注册</a></li>
+                {% endif %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">其他操作 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/logout/">注销</a></li>
+                        <li><a href="#">个人中心</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Panel heading without title</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Panel title</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            {% for field in article %}
+                <h4><a href="/blog/{{ field.user.username  }}/articles/{{ field.pk }}">{{ field.title }}</a></h4>
+                <div class="row">
+                    <div class="col-md-2"><img width="60" height="60" src="/media/{{ field.user.avatar }}"></div>
+                    <div class="col-md-8">{{ field.desc }}</div>
+                </div>
+                <div class="desc_info">
+                    <span>{{ field.user.username }}</span> 发布于 &nbsp;
+                    <span> {{ field.create_time|date:"Y-m-d" }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-comment">评论（{{ field.comment_count }}）</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-thumbs-up">阅读（{{ field.up_count }}）</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+                <hr>
+            {% endfor %}
+
+
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">Panel heading without title</div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Panel title</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/static/js/jquery-3.2.1.min.js"></script>
+<script src="/static/bs/js/bootstrap.js"></script>
+</html>

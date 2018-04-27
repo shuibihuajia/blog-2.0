@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <link rel="stylesheet" href="/static/bs/css/bootstrap.css">
+        <style>
+        .container{
+            margin-top: 100px;
+        }
+        #avatar{
+            display: none;
+        }
+
+        .avatar{
+            width: 60px;
+            height: 60px;
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form action="" method="post" novalidate>
+            {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                    <label for="">{{ field.label }}</label>
+                    {{ field }} <span class="error pull-right"></span>
+                    </div>
+                {% endfor %}
+{#            这里用for 实现了，点击头像也可以触发选择图片操作#}
+            <div class="form-group">
+                <label for="avatar">头像
+                    <img class="avatar" src="/static/img/default.png" >
+                </label>
+                <input type="file" id="avatar">
+            </div>
+                <input type="button" class="btn btn-default reg_btn pull-right" value="提交">
+                <span> <a href="/login/" class="pull-right">登录</a> </span>
+                <span class="error" style="color: red; margin-left: 20px"></span>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="/static/js/jquery-3.2.1.min.js"></script>
+<script src="/static/js/register.js"></script>
+</html>

@@ -1,0 +1,63 @@
+<div class="menu">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">文章分类</h3>
+        </div>
+        <div class="panel-body">
+            {% for cate in category_list %}
+                <p>
+                    <span> <a href="/blog/{{ username }}/cate/{{ cate.0 }}">{{ cate.0 }}</a></span>
+                    <span>({{ cate.1 }})</span>
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">我的标签</h3>
+        </div>
+        <div class="panel-body">
+            {% for tag in tag_list %}
+                <p>
+                    <span> <a href="/blog/{{ username }}/tag/{{ tag.0 }}">{{ tag.0 }}</a></span>
+                    <span>({{ tag.1 }})</span>
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">随笔档案</h3>
+        </div>
+        <div class="panel-body">
+                        {% for date in date_list %}
+                            <p>
+                                <span> <a href="/blog/{{ username }}/date/{{ date.0 }}">{{ date.0 }}</a></span>
+                                <span> ( {{ date.1 }})
+                                        </span>
+                            </p>
+                        {% endfor %}
+
+    {#    regroup日期归档 #}
+{#            {% regroup date_list by create_time.year as create_year %}#}
+{#            <ul>#}
+{#                {% for year in create_year %}#}
+{#                    <li> {{ year.grouper }}年#}
+{#                        {% regroup year.list by create_time.month as create_month %}#}
+{#                        <ul>#}
+{#                            {% for month in create_month %}#}
+{##}
+{#                                <li>#}
+{#                                    {{ month.grouper }}月（{{ month.list | length }}）#}
+{#                                </li>#}
+{##}
+{#                            {% endfor %}#}
+{#                        </ul>#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+
+        </div>
+    </div>
+
+</div>

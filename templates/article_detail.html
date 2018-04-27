@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2 class="text-center "> {{ article.title }}</h2>
+    <span>  {{ article.create_time|date:"Y-m-d" }}</span>
+    {% if not article.articledetail.content %}
+        <p>作者什么也没写！</p>
+        {#    一对一表，通过表名小写.字段名查找#}
+    {% else %}
+        <div class="content">
+            {{ article.articledetail.content|safe }}
+        </div>
+    {% endif %}
+
+    <hr>
+    {#    点赞区域#}
+    <div class="clearfix">
+        <div id="div_digg">
+            <div class="diggit digg">
+                <span class="diggnum" id="digg_count">{{ article.up_count }}</span>
+            </div>
+            <div class="buryit digg">
+                <span class="burynum" id="bury_count">{{ article.down_count }}</span>
+            </div>
+
+        </div>
+    </div>
+    <div class="pull-right" id="digg_word"></div>
+{#     这种作为参数回掉的标签 不能嵌套#}
+    <div id="info" article_id="{{ article.pk }}" username="{{ request.user.username }}"></div>
+
+
+    {% csrf_token %}
+    <p>评论树</p>
+    <div class="comment_tree"></div>
+    <script>
+        //这里是javascript 的自执行函数
+        (function () {
+            //alert(123) ok
+            $.ajax({
+                url: "/blog/get_comment_tree/" + $("#info").attr("article_id"),
+                success: function (comment_list) {
+                    $.each(comment_list, function (index, comment) {
+                        //alert(111) ok
+                        var user_name = comment.user__username;
+                        var content = comment.content;
+                        var pk = comment.pk;
+                        var pid = comment.parent_comment_id;
+                        // 这里留一个id=pk 的接口，如果有子评论就插到这里
+                        s = '<ul class=list-group>' +
+                            '<li class="comment_tree_item  list-group-item " id=' + pk + '> ' +
+                            '<span>' + user_name + '</span>' +
+                            '<span>' + content + '</span> </li> </ul>';
+                        if (pid) {
+                            $("#" + pid).append(s);
+                            //为什么全都加上了well
+                            $(".comment_tree_item").addClass("well");
+                        } else {
+                            $(".comment_tree").append(s)
+                        }
+                    })
+                }
+            })
+        })()
+    </script>
+
+
+    <p>评论</p>
+    <hr>
+    {#    评论楼#}
+
+    <ul class="list-group comment_list">
+        {% for comment in comment_list %}
+            <li class="list-group-item comment_item">
+                <div>
+                    <span>   #{{ forloop.counter }}楼 </span> &nbsp;&nbsp;
+                    <span>{{ comment.comment_date|date:"Y-m-d H:i" }} </span>&nbsp; &nbsp;|
+                    <span><a href="/blog/{{ request.user.username }}/">{{ request.user.username }}</a>  </span>
+                    <span><a class="pull-right replay" pk="{{ comment.pk }}"
+                             username="{{ comment.user.username }}">回复</a></span>
+                </div>
+
+                {#            子评论#}
+                {#            <li class="list-group-item ">#}
+
+                {% if comment.parent_comment_id %}
+                    <div style="font-size: 12px" class="well">
+                        <a href="/blog/{{ comment.parent_comment.user.username }}/">
+                            @{{ comment.parent_comment.user.username }}</a>
+                        <span> {{ comment.parent_comment.content }} </span>&nbsp;&nbsp;
+                        <span> __{{ comment.parent_comment.comment_date|date:"Y-m-d H:i" }} </span>
+                    </div>
+                {% endif %}
+                <div class="comment_content">
+                    <p class="well">  {{ comment.content }}</p>
+                </div>
+            </li>
+            {#            </li>#}
+        {% endfor %}
+    </ul>
+
+
+    {#    评论框#}
+    <p>我也来评论一下：</p>
+    <hr>
+    <div class=" comment">
+        <div class="row">
+            <div class="col-md-7">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">用户:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputEmail3"
+                                   value="{{ request.user.username }}" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">评论:</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="inputPassword3" rows="6"></textarea>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-default comment_btn pull-right">提交</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <link rel="stylesheet" href="/static/css/article-detail.css">
+    <script src="/static/js/article_detail.js"></script>
+{% endblock %}
+<!-- UY BEGIN -->
+{#    <p>友言社会化评论系统</p>#}
+{#<div id="uyan_frame"></div>#}
+{#<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161732"></script>#}
+<!-- UY END -->
+
+
+{#    <script>#}
+{#        $(".digg").click(function () {#}
+{#            if ("{{ request.user.username }}") {#}
+{#                var is_up = $(this).hasClass("diggit");#}
+{#                var article_id = $("#info").attr("article_id")#}
+{#                $.ajax({#}
+{#                    url: "/blog/poll/",#}
+{#                    type: "post",#}
+{#                    data: {#}
+{#                        is_up: is_up,#}
+{#                        article_id: article_id,#}
+{#                        csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()#}
+{#                    },#}
+{#                    success: function (data) {#}
+{#                        console.log(data)#}
+{#                        if (data.state) {   //state =True 传过来表明赞或踩的数据成功的存进了数据库#}
+{#                            // 判断是赞还是踩#}
+{#                            if (is_up) {#}
+{#                                var val = parseInt($("#digg_count").text()) + 1#}
+{#                                $("#digg_count").text(val)#}
+{#                            } else {#}
+{#                                var val = parseInt($("#bury_count").text()) + 1#}
+{#                                $("#bury_count").text(val)#}
+{#                            }#}
+{#                        } else {#}
+{#                            if (data.first_op) {#}
+{#                                $("#digg_word").html("您已经赞过了！").css({"color": "red", "margin-right": "30px"})#}
+{#                            } else {#}
+{#                                $("#digg_word").html("您已经踩过了！").css({"color": "red", "margin-right": "30px"})#}
+{#                            }#}
+{#                        }#}
+{#                    }#}
+{#                })#}
+{##}
+{#            } else {#}
+{#                location.href("/login/")#}
+{#            }#}
+{#        });#}
+{#    </script>#}
+{#    <script>#}
+{#        var pid = "";#}
+{#        var coment_area = $("#inputPassword3");#}
+{#        $(".comment_btn").click(function () {#}
+{#            //alert(123)#}
+{#            if ("{{ request.user.username }}") {#}
+{#                var article_id = $("#info").attr("article_id");#}
+{#                //bug 如果用户手动删除@用户名#}
+{#                if (coment_area.val()[0] !== "@") {#}
+{#                    pid = ""#}
+{#                }#}
+{#                if (pid) {#}
+{#                    var index = coment_area.val().indexOf("\n");#}
+{#                    var content = coment_area.val().slice(index + 1)#}
+{#                } else {#}
+{#                    content = coment_area.val();#}
+{#                }#}
+{##}
+{#                $.ajax({#}
+{#                    url: "/blog/comment/",#}
+{#                    type: "post",#}
+{#                    data: {#}
+{#                        article_id: article_id,#}
+{#                        content: content,#}
+{#                        pid: pid,#}
+{#                        csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()#}
+{#                    },#}
+{#                    success: function (data) {#}
+{#                        if (data.state) {#}
+{#                            console.log(data)#}
+{#                            var user = $("#info").attr("username")#}
+{#                            var floor = $(".comment_item").length + 1#}
+{#                            var ctime = data.ctime;#}
+{#                            var content = data.content;#}
+{#                            var s = "            <li class=\"list-group-item comment_item\">\n" +#}
+{#                                "                <div>\n" +#}
+{#                                "                    <span>   #" + floor + "楼 </span> &nbsp;&nbsp;\n" +#}
+{#                                "                    <span>" + ctime + "</span> &nbsp; &nbsp;|\n" +#}
+{#                                "                    <span><a href=\"/blog/" + user + "/\">" + user + "</a>  </span>\n" +#}
+{#                                "                   <p class='well'> "+content+"</p>"+#}
+{#                                "                </div>\n" +#}
+{#                                "            </li>";#}
+{#                            //append 是添加到选择器的子元素的后面#}
+{#                            $(".comment_list ").append(s);#}
+{##}
+{#                            //回复后再次提交应该清空 根评论#}
+{#                            coment_area.val("");#}
+{#                            pid = ""#}
+{##}
+{#                        } else {#}
+{#                            coment_area.val(" 提交失败！").css({"color": "red"});#}
+{#                        }#}
+{#                    }#}
+{#                })#}
+{#            }#}
+{##}
+{#            else (#}
+{#                location.href("/login/")#}
+{#            )#}
+{##}
+{#        })#}
+{#    </script>#}
+{#    <script>#}
+{#        $(".replay").click(function () {#}
+{##}
+{#            coment_area.focus();#}
+{#            var val = $(this).attr("username") + "\n";#}
+{#            coment_area.val("@" + val);#}
+{#            pid = $(this).attr("pk")#}
+{#        })#}
+{#    </script>#}
+
+

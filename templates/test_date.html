@@ -1,0 +1,17 @@
+<h2>日期分组测试</h2>
+
+{#[{'title': 'python并发编程', 'create_time': datetime.datetime(2018, 4, 16, 6, 45, 58, tzinfo=<UTC>)}#}
+
+{% regroup date_list by create_time.year as create_year %}
+<ul>
+    {% for year in create_year %}
+    <li> {{ year.grouper }}年
+    {% regroup year.list by create_time.month as create_month%}
+        <ul>
+            {% for month in create_month %}
+            <li> {{ month.grouper }}月（{{ month.list | length }}）</li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="article_list">
+                {% for article in article_list %}
+                    <h2>
+                        <span> <a href="/blog/{{ user.username }}/articles/{{ article.pk }}">{{ article.title }}</a> </span>
+                    </h2>
+                    <p class="article_desc"> {{ article.desc }}</p>
+                    <div class="article_explain pull-right">
+                        <span> posted</span> @&nbsp;
+                        <span> {{ article.create_time |date:"Y-m-d H:i:s" }}</span>
+                        <span> {{ user.username }}</span>&nbsp;&nbsp;
+                        <span>阅读（{{ article.comment_count }}）</span>&nbsp;&nbsp;
+                        <span>点赞（{{ article.up_count }} ）</span>&nbsp;&nbsp;
+                    </div>
+                    <hr>
+                {% endfor %}
+
+            </div>
+{% endblock %}

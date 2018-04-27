@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.head_area h3 {
+    margin-top: 10px;
+    margin-left: 50px;
+    font-weight: bolder;
+}
+
+.nav ul {
+    height: 40px;
+    background-color: lightgray;
+    width: 100%;
+}
+
+.nav_ul li {
+    width: 100px;
+    height: 100%;
+    text-align: center;
+    line-height: 40px;
+    float: left;
+    list-style: none;
+}
+
+.nav_ul li a {
+    color: black;
+    text-decoration: none;
+}
+
+.nav_ul li a:hover {
+    color:white;
+    text-decoration: none;
+}
+
+.article_list .article_explain {
+    font-size: 13px;
+    color: lightslategray;
+}
+
+.article_list .article_desc {
+    text-indent: 26px;
+}
